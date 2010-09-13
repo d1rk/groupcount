@@ -1,0 +1,3 @@
+[submodule "plugins/flour"]
+	path = plugins/flour
+	url = http://github.com/bruensicke/flour.git
