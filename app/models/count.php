@@ -12,7 +12,9 @@ class Count extends AppModel
 	public $name = 'Count';
 
 	public $belongsTo = array(
-		'Collection',
+		'Collection' => array(
+			'counterCache' => 'counts_count',
+		),
 		// 'User',
 	);
 

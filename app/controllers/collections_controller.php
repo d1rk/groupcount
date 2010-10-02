@@ -10,6 +10,13 @@
 App::import('Core', array('Security'));
 class CollectionsController extends AppController {
 
+	public $paginate = array(
+		'Count' => array(
+			'order' => 'Count.created DESC',
+			'limit' => 40,
+		)
+	);
+
 /**
  * Shows a button to create a new Collection
  *
@@ -18,7 +25,7 @@ class CollectionsController extends AppController {
  */
 	public function index()
 	{
-		
+		$this->data = $this->paginate('Collection');
 	}
 
 /**
@@ -30,7 +37,9 @@ class CollectionsController extends AppController {
 	public function view($slug)
 	{
 		//TODO: limit - it loads ALL associated counts (!)
+		$this->Collection->recursive = 0;
 		$this->data = $this->Collection->findBySlug($slug);
+		$this->data['Count'] = $this->paginate('Count', array('Count.collection_id' => $this->data['Collection']['id']));
 		if(empty($this->data))
 		{
 			$this->Flash->error(
@@ -48,6 +57,18 @@ class CollectionsController extends AppController {
 			__('Collection :slug created.', true), 
 			array('controller' => 'collections', 'action' => 'view', $slug)
 		);
+	}
+
+	public function result($slug)
+	{
+		$this->data = $this->Collection->findBySlug($slug);
+		if(empty($this->data))
+		{
+			$this->Flash->error(
+				__('Collection :slug not found.', true), 
+				'/'
+			);
+		}
 	}
 
 }

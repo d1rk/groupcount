@@ -9,6 +9,7 @@
 	<?php
 		echo $this->Html->meta('icon');
 
+		echo $this->Html->css('/flour/css/blueprint');
 		echo $this->Html->css('groupcount');
 
 		echo $scripts_for_layout;
