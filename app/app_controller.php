@@ -16,6 +16,7 @@ class AppController extends Controller
 		'Html',
 		'Form',
 		'Session',
+		'Number',
 	);
 
 	public $components = array(
