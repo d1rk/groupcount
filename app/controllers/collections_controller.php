@@ -61,6 +61,10 @@ class CollectionsController extends AppController {
 
 	public function result($slug)
 	{
+		if(!empty($this->data))
+		{
+			$this->set('filter', $this->data['Count']['group']);
+		}
 		$this->data = $this->Collection->findBySlug($slug);
 		if(empty($this->data))
 		{

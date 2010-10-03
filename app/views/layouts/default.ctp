@@ -12,6 +12,10 @@
 		echo $this->Html->css('/flour/css/blueprint');
 		echo $this->Html->css('groupcount');
 
+		echo $this->Html->script(array(
+			'/flour/js/jquery',
+		));
+
 		echo $scripts_for_layout;
 	?>
 </head>

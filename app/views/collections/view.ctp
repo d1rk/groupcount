@@ -39,6 +39,8 @@ echo $this->Form->input('Count.val', array(
 	'autocomplete' => 'off',
 ));
 
+echo $this->Form->submit( __('Next', true));
+
 echo <<<HTML
 	</div>
 	<div class="span-12 last">
@@ -51,8 +53,6 @@ echo $this->element('flour/iterator', array(
 	'plugin' => 'flour',
 ));
 
-echo $this->Form->submit( __('Next', true));
-
 
 echo <<<HTML
 	</div>
@@ -62,3 +62,8 @@ HTML;
 
 echo $this->Form->end();
 
+echo $this->Html->scriptBlock("$().ready(function(){
+	// $('.group, .count').attr('autocomplete', 'off');
+	$('#CountVal').attr('autocomplete', 'off');
+	$('form :input:visible:enabled:first').focus();
+});");

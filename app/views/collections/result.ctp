@@ -1,6 +1,20 @@
 <?php
 echo $this->Html->link( __('Enter data for this Collection', true), array('controller' => 'collections', 'action' => 'view', $this->data['Collection']['slug']));
 
+echo $this->Form->create('Count', array('url' => array('controller' => 'collections', 'action' => 'result', $this->data['Collection']['slug'])));
+echo $this->Form->hidden('Count.collection_id', array(
+	'value' => $this->data['Collection']['id'],
+));
+
+echo $this->Form->input('Count.group', array(
+	'type' => 'text',
+	'class' => 'group big',
+));
+
+echo $this->Form->submit( __('Filter', true));
+echo $this->Form->end();
+
+
 $numFormat = array(
 	'places' => 2,
 	'thousands' => '.',
@@ -23,39 +37,46 @@ foreach($this->data['Count'] as $item)
 
 foreach($values as $group => $vals)
 {
-	echo '<div class="result item">';
-	echo $this->Html->tag('h4', String::insert( __('Nummer: :group', true), array('group' => $group)));
-	if(!array_key_exists($group, $results))
+	if(!isset($filter) || $filter == $group)
 	{
-		$results[$group] = 0;
+		echo '<div class="result item">';
+		echo $this->Html->tag('h4', String::insert( __('Nummer: :group', true), array('group' => $group)));
+		if(!array_key_exists($group, $results))
+		{
+			$results[$group] = 0;
+		}
+		// echo $this->Html->nestedList($vals, array('class' => 'result rows'));
+		foreach($vals as $val)
+		{
+			$results[$group] += $val;
+			$sumMax += $val;
+			// echo $this->Html->tag('code', $val, array('class' => 'result'));
+			echo $this->Html->tag('code', $this->Number->format($val, $numFormat), array('class' => 'count'));
+		}
+		echo $this->Html->tag('code', $this->Number->format($results[$group], $numFormat), array('class' => 'result'));
+		$result = $results[$group];
+		$provision = $result / 100 * 20;
+		$remainder = $result - $provision;
+		echo $this->Html->tag('code', String::insert( 
+			__(':result - :provision = :remainder', true), array(
+				'result' => $this->Number->format($result, $numFormat),
+				'provision' => $this->Number->format($provision, $numFormat),
+				'remainder' => $this->Number->format($remainder, $numFormat),
+			)), array('class' => 'calc'));
+		echo '</div>';
 	}
-	// echo $this->Html->nestedList($vals, array('class' => 'result rows'));
-	foreach($vals as $val)
-	{
-		$results[$group] += $val;
-		$sumMax += $val;
-		// echo $this->Html->tag('code', $val, array('class' => 'result'));
-		echo $this->Html->tag('code', $this->Number->format($val, $numFormat), array('class' => 'count'));
-	}
-	echo $this->Html->tag('code', $this->Number->format($results[$group], $numFormat), array('class' => 'result'));
-	$result = $results[$group];
-	$provision = $result / 100 * 20;
-	$remainder = $result - $provision;
-	echo $this->Html->tag('code', String::insert( 
-		__(':result - :provision = :remainder', true), array(
-			'result' => $this->Number->format($result, $numFormat),
-			'provision' => $this->Number->format($provision, $numFormat),
-			'remainder' => $this->Number->format($remainder, $numFormat),
-		)), array('class' => 'calc'));
-	echo '</div>';
 }
 
-echo $this->Html->tag('h2', __('Endergebnis', true));
+if(!isset($filter))
+{
+	echo $this->Html->tag('h2', __('Endergebnis', true));
 
-$numMax = count($results);
-$sumMax = $this->Number->format($sumMax, $numFormat);
-echo $this->Html->para('stat', "Anzahl Nummern: $numMax");
-echo $this->Html->para('stat', "Summe Gesamt: $sumMax");
+	$numMax = count($results);
+	$sumMax = $this->Number->format($sumMax, $numFormat);
+	echo $this->Html->para('stat', "Anzahl Nummern: $numMax");
+	echo $this->Html->para('stat', "Summe Gesamt: $sumMax");
+	
+}
 
 // debug($this->data);
 ?>
